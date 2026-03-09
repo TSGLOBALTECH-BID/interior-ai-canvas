@@ -1,13 +1,41 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Environment, Grid } from "@react-three/drei";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import Floor from "@/app/components/Floor"
 import Walls from '@/app/components/Walls'
 import Sofa from '@/app/components/Sofa'
 import Table from '@/app/components/Table'
 import Lighting from '@/app/components/Lighting'
+import { PerspectiveCamera } from "three";
+
+function CameraController() {
+  const { camera } = useThree();
+  
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 768;
+      const perspectiveCamera = camera as PerspectiveCamera;
+      
+      if (isMobile) {
+        perspectiveCamera.position.set(12, 8, 12);
+        perspectiveCamera.fov = 60;
+      } else {
+        perspectiveCamera.position.set(8, 6, 8);
+        perspectiveCamera.fov = 50;
+      }
+      perspectiveCamera.lookAt(0, 0, 0);
+      perspectiveCamera.updateProjectionMatrix();
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [camera]);
+
+  return null;
+}
 
 export default function SceneCanvas() {
   return (
@@ -26,6 +54,7 @@ export default function SceneCanvas() {
       }}
       className="bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900"
     >
+      <CameraController />
       <Suspense fallback={null}>
         {/* Lighting */}
         <Lighting />

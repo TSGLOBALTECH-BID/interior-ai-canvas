@@ -15,16 +15,16 @@ export default function Home() {
     <div className="flex flex-col md:flex-row min-h-screen bg-zinc-100 dark:bg-zinc-900">
       {/* Left Panel - Prompt Input */}
       <div className="w-full md:w-[400px] flex-shrink-0 flex flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
-        <div className="p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+        <div className="p-4 md:p-6 border-b border-zinc-200 dark:border-zinc-800">
+          <h1 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100">
             Interior AI
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
             Design your space with AI
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 flex-1 flex flex-col">
+        <form onSubmit={handleSubmit} className="p-4 md:p-6 flex-1 flex flex-col">
           <label
             htmlFor="prompt"
             className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
@@ -36,18 +36,18 @@ export default function Home() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="e.g., A modern living room with a beige sofa, wooden floor, and large windows..."
-            className="flex-1 min-h-[200px] w-full p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 min-h-[150px] md:min-h-[200px] w-full p-3 md:p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
           />
           
           <button
             type="submit"
-            className="mt-4 w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            className="mt-4 w-full py-2.5 md:py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm md:text-base"
           >
             Generate Design
           </button>
         </form>
 
-        <div className="p-6 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="p-4 md:p-6 border-t border-zinc-200 dark:border-zinc-800">
           <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">
             Quick Prompts
           </h3>
@@ -72,21 +72,21 @@ export default function Home() {
 
       {/* Right Panel - Canvas Area */}
       <div className="flex-1 flex flex-col">
-        <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex items-center justify-between">
-          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+        <div className="p-3 md:p-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex items-center justify-between gap-2 md:gap-0">
+          <h2 className="text-base md:text-lg font-medium text-zinc-900 dark:text-zinc-100">
             Canvas Preview
           </h2>
           <div className="flex gap-2">
-            <button className="px-3 py-1.5 text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+            <button className="px-2.5 md:px-3 py-1.5 text-xs md:text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
               Reset View
             </button>
-            <button className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button className="px-2.5 md:px-3 py-1.5 text-xs md:text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Export
             </button>
           </div>
         </div>
         
-        <div className="flex-1 relative">
+        <div className="md:flex-1 h-[50vh] md:h-auto relative">
           <SceneCanvas />
           
           {/* Placeholder overlay when no design is generated */}
