@@ -12,7 +12,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen bg-zinc-100 dark:bg-zinc-900">
+    <div className="flex flex-col md:flex-row min-h-screen bg-zinc-100 dark:bg-zinc-900">
       {/* Left Panel - Prompt Input */}
       <div className="w-full md:w-[400px] flex-shrink-0 flex flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
         <div className="p-6 border-b border-zinc-200 dark:border-zinc-800">
