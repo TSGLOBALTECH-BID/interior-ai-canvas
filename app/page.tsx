@@ -90,7 +90,7 @@ export default function Home() {
           <SceneCanvas />
           
           {/* Placeholder overlay when no design is generated */}
-          {prompt === "" && (
+          {/* {prompt === "" && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center">
@@ -113,7 +113,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

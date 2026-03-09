@@ -40,8 +40,8 @@ export default function SceneCanvas() {
         <Walls />
         
         {/* Furniture */}
-        {/* <Sofa position={[-2, 0, 0]} />
-        <Table position={[2, 0, 0]} /> */}
+        <Sofa position={[-2, 0, 0]} />
+        <Table position={[2, 0, 0]} />
         
         {/* Grid helper for design alignment */}
         <Grid
