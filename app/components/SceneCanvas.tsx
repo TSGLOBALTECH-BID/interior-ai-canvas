@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls, Environment, Grid } from "@react-three/drei";
+import { OrbitControls, Grid } from "@react-three/drei";
 import { Suspense, useEffect } from "react";
 import Floor from "@/app/components/Floor"
 import Walls from '@/app/components/Walls'
@@ -58,9 +58,6 @@ export default function SceneCanvas() {
       <Suspense fallback={null}>
         {/* Lighting */}
         <Lighting />
-        
-        {/* Environment */}
-        <Environment preset="apartment" />
         
         {/* Floor */}
         <Floor />
