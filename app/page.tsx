@@ -32,8 +32,10 @@ export default function Home() {
       }
 
       const data = await response.json();
+      console.log('API data:',JSON.stringify(data))
       
       if (data.success && data.updates) {
+        console.log('Received updates from API:', JSON.stringify(data.updates, null, 2));
         // Apply partial updates to the scene config
         setSceneConfig(prevConfig => ({
           ...prevConfig,

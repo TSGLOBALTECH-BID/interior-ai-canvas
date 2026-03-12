@@ -28,6 +28,7 @@ interface SceneCanvasProps {
  * @param config - Partial SceneConfig object to override defaults
  */
 export default function SceneCanvas({ config }: SceneCanvasProps) {
+  console.log('SceneCanvas received config:', JSON.stringify(config, null, 2));
   // Merge provided config with defaults
   const sceneConfig: SceneConfig = {
     ...defaultSceneConfig,
