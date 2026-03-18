@@ -3,6 +3,24 @@ import { SceneConfig } from '@/app/config/sceneConfig';
 import { generateSceneWithLLM } from '@/app/lib/llm';
 
 /**
+ * Simplified Canvas JSON format for AI communication
+ */
+interface CanvasJSON {
+  room: {
+    width: number;
+    depth: number;
+    floorMaterial: string;
+  };
+  objects: Array<{
+    id: string;
+    type: string;
+    position: [number, number, number];
+    rotation: number;
+    color: string;
+  }>;
+}
+
+/**
  * AI Scene Update API
  * 
  * Uses LangChain with Ollama (free local LLM) to process scene generation requests.
@@ -11,13 +29,13 @@ import { generateSceneWithLLM } from '@/app/lib/llm';
  * Request body:
  * {
  *   prompt: string,        // User's design prompt
- *   currentConfig: SceneConfig  // Current scene configuration
+ *   currentConfig: CanvasJSON  // Current canvas JSON state
  * }
  * 
  * Response:
  * {
  *   success: boolean,
- *   updates: Partial<SceneConfig>,  // Partial updates to apply
+ *   updates: CanvasJSON,  // Updated canvas JSON
  *   message: string
  * }
  */
@@ -34,9 +52,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate currentConfig matches expected CanvasJSON format
+    const canvasConfig = currentConfig as CanvasJSON;
+    if (!canvasConfig.room || !canvasConfig.objects) {
+      return NextResponse.json(
+        { error: 'Invalid canvas JSON format' },
+        { status: 400 }
+      );
+    }
+
     // Use LangChain with Ollama for scene generation
     // Falls back to rule-based if Ollama is not available
-    const result = await generateSceneWithLLM(prompt, currentConfig);
+    const result = await generateSceneWithLLM(prompt, canvasConfig);
 
     if (result.error) {
       return NextResponse.json(

@@ -17,6 +17,7 @@ import {
 
 interface SceneCanvasProps {
   config?: Partial<SceneConfig>;
+  isEmpty?: boolean;
 }
 
 /**
@@ -27,7 +28,7 @@ interface SceneCanvasProps {
  * 
  * @param config - Partial SceneConfig object to override defaults
  */
-export default function SceneCanvas({ config }: SceneCanvasProps) {
+export default function SceneCanvas({ config, isEmpty = false }: SceneCanvasProps) {
   console.log('SceneCanvas received config:', JSON.stringify(config, null, 2));
   // Merge provided config with defaults
   const sceneConfig: SceneConfig = {
@@ -46,7 +47,26 @@ export default function SceneCanvas({ config }: SceneCanvasProps) {
   const { camera: cameraConfig, lighting, floor, walls, grid, controls, furniture, background } = sceneConfig;
 
   return (
-    <Canvas
+    <div className="w-full h-full relative">
+      {/* Placeholder overlay when canvas is empty */}
+      {isEmpty && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900">
+          <div className="text-center p-8 max-w-md">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+              <svg className="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+              Start Space Design
+            </h3>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              by specifying/selecting your room first
+            </p>
+          </div>
+        </div>
+      )}
+      <Canvas
       shadows
       camera={{
         position: [cameraConfig.position.x, cameraConfig.position.y, cameraConfig.position.z],
@@ -108,6 +128,7 @@ export default function SceneCanvas({ config }: SceneCanvasProps) {
         />
       </Suspense>
     </Canvas>
+    </div>
   );
 }
 
