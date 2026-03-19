@@ -42,22 +42,22 @@ function sceneConfigToCanvasJSON(config: SceneConfig): CanvasJSON {
       depth: config.floor.size.depth,
       floorMaterial: config.floor.material.color,
     },
-    objects: config.furniture.map((item) => ({
+    objects: config.furniture?.map((item) => ({
       id: item.id,
       type: item.type,
       position: [item.position.x, item.position.y, item.position.z] as [number, number, number],
       rotation: item.rotation?.y || 0,
       color: (item.properties as { color?: string })?.color || '#ffffff',
-    })),
+    }))||[],
   };
 }
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
-  const [sceneConfig, setSceneConfig] = useState<SceneConfig>(emptySceneConfig);
+  const [sceneConfig, setSceneConfig] = useState<SceneConfig>(defaultSceneConfig);
   const [isGenerating, setIsGenerating] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>("");
-  const [hasStartedDesign, setHasStartedDesign] = useState(false);
+  const [hasStartedDesign, setHasStartedDesign] = useState(true);
 
   const handleSceneUpdate = useCallback(async (newPrompt: string) => {
     if (!newPrompt.trim()) return;
@@ -122,10 +122,9 @@ export default function Home() {
   };
 
   const handleResetView = () => {
-    // Reset to empty config (no furniture, placeholder shown)
-    setSceneConfig(emptySceneConfig);
+    // Reset to default room config with walls and furniture
+    setSceneConfig(defaultSceneConfig);
     setLastUpdate("");
-    setHasStartedDesign(false);
     setPrompt("");
   };
 

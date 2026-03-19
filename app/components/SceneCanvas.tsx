@@ -10,41 +10,40 @@ import Table from '@/app/components/Table'
 import Lighting from '@/app/components/Lighting'
 import { PerspectiveCamera } from "three";
 import { 
-  SceneConfig, 
-  defaultSceneConfig, 
-  FurnitureItem 
+  CanvasJSON, 
+  defaultCanvasJSON, 
+  FurnitureItem,
+  RoomConfig
 } from "@/app/config/sceneConfig";
 
 interface SceneCanvasProps {
-  config?: Partial<SceneConfig>;
+  config?: Partial<CanvasJSON>;
   isEmpty?: boolean;
 }
 
 /**
  * SceneCanvas - A JSON-driven 3D scene renderer
  * 
- * All rendering is controlled by the config prop (JSON object).
- * Update the config to dynamically change the scene.
+ * Rendering is controlled by the CanvasJSON prop with two main parts:
+ * - room: Wall configuration including windows and doors
+ * - objects: Furniture items to render in the room
  * 
- * @param config - Partial SceneConfig object to override defaults
+ * @param config - Partial CanvasJSON object to override defaults
  */
 export default function SceneCanvas({ config, isEmpty = false }: SceneCanvasProps) {
   console.log('SceneCanvas received config:', JSON.stringify(config, null, 2));
+  
   // Merge provided config with defaults
-  const sceneConfig: SceneConfig = {
-    ...defaultSceneConfig,
-    ...config,
-    camera: { ...defaultSceneConfig.camera, ...config?.camera },
-    lighting: { ...defaultSceneConfig.lighting, ...config?.lighting },
-    floor: { ...defaultSceneConfig.floor, ...config?.floor },
-    walls: { ...defaultSceneConfig.walls, ...config?.walls },
-    grid: { ...defaultSceneConfig.grid, ...config?.grid },
-    controls: { ...defaultSceneConfig.controls, ...config?.controls },
-    background: { ...defaultSceneConfig.background, ...config?.background },
-    furniture: config?.furniture || defaultSceneConfig.furniture,
+  const canvasJSON: CanvasJSON = {
+    room: config?.room ? { ...defaultCanvasJSON.room, ...config.room } : defaultCanvasJSON.room,
+    objects: config?.objects || defaultCanvasJSON.objects,
+    floor: config?.floor ? { ...defaultCanvasJSON.floor, ...config.floor } : defaultCanvasJSON.floor,
+    camera: config?.camera ? { ...defaultCanvasJSON.camera, ...config.camera } : defaultCanvasJSON.camera,
+    lighting: config?.lighting ? { ...defaultCanvasJSON.lighting, ...config.lighting } : defaultCanvasJSON.lighting,
+    background: config?.background ? { ...defaultCanvasJSON.background, ...config.background } : defaultCanvasJSON.background,
   };
 
-  const { camera: cameraConfig, lighting, floor, walls, grid, controls, furniture, background } = sceneConfig;
+  const { room, objects, floor, camera: cameraConfig, lighting, background } = canvasJSON;
 
   return (
     <div className="w-full h-full relative">
@@ -89,42 +88,40 @@ export default function SceneCanvas({ config, isEmpty = false }: SceneCanvasProp
         {/* Floor */}
         <Floor config={floor} />
         
-        {/* Walls */}
-        <Walls config={walls} />
+        {/* Room Walls - dynamically generated from room config */}
+        <Walls config={room} />
         
-        {/* Furniture - rendered from JSON config */}
-        {furniture.map((item: FurnitureItem) => (
+        {/* Objects/Furniture - rendered from CanvasJSON objects */}
+        {objects.map((item: FurnitureItem) => (
           <FurnitureRenderer key={item.id} item={item} />
         ))}
         
         {/* Grid helper for design alignment */}
-        {grid.enabled && (
-          <Grid
-            position={[0, 0.01, 0]}
-            args={[grid.size, grid.divisions]}
-            cellSize={grid.cellSize}
-            cellThickness={grid.cellThickness}
-            cellColor={grid.cellColor}
-            sectionSize={grid.sectionSize}
-            sectionThickness={grid.sectionThickness}
-            sectionColor={grid.sectionColor}
-            fadeDistance={grid.fadeDistance}
-            fadeStrength={grid.fadeStrength}
-            followCamera={false}
-            infiniteGrid={true}
-          />
-        )}
+        <Grid
+          position={[0, 0.01, 0]}
+          args={[20, 20]}
+          cellSize={0.5}
+          cellThickness={0.5}
+          cellColor="#6b7280"
+          sectionSize={2}
+          sectionThickness={1}
+          sectionColor="#9ca3af"
+          fadeDistance={30}
+          fadeStrength={1}
+          followCamera={false}
+          infiniteGrid={true}
+        />
         
         {/* Camera Controls */}
         <OrbitControls
-          enablePan={controls.enablePan}
-          enableZoom={controls.enableZoom}
-          enableRotate={controls.enableRotate}
-          minDistance={controls.minDistance}
-          maxDistance={controls.maxDistance}
-          minPolarAngle={controls.minPolarAngle}
-          maxPolarAngle={controls.maxPolarAngle}
-          target={[controls.target.x, controls.target.y, controls.target.z]}
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          minDistance={3}
+          maxDistance={20}
+          minPolarAngle={0}
+          maxPolarAngle={Math.PI / 2.1}
+          target={[0, 0, 0]}
         />
       </Suspense>
     </Canvas>
@@ -135,7 +132,7 @@ export default function SceneCanvas({ config, isEmpty = false }: SceneCanvasProp
 /**
  * CameraController - Handles camera positioning based on config
  */
-function CameraController({ config }: { config: SceneConfig['camera'] }) {
+function CameraController({ config }: { config: CanvasJSON['camera'] }) {
   const { camera } = useThree();
   
   useEffect(() => {
@@ -163,7 +160,7 @@ function CameraController({ config }: { config: SceneConfig['camera'] }) {
 }
 
 /**
- * FurnitureRenderer - Renders furniture items based on JSON config
+ * FurnitureRenderer - Renders furniture items based on CanvasJSON objects
  */
 function FurnitureRenderer({ item }: { item: FurnitureItem }) {
   const position: [number, number, number] = [
