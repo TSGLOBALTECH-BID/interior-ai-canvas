@@ -231,9 +231,6 @@ export default function Walls({ config }: WallsProps) {
 
   if (!enabled) return null;
 
-  const wallLength = Math.max(width, depth);
-  const wallOffset = wallLength / 2;
-
   // Default wall configurations if not provided
   const defaultWalls: WallSegmentConfig[] = [
     { id: 'front-wall', side: 'front', hasWindow: false, hasDoor: false },
@@ -251,43 +248,43 @@ export default function Walls({ config }: WallsProps) {
 
   return (
     <group>
-      {/* Back Wall (front in 3D view) */}
+      {/* Front Wall (at -z) */}
       <WallSegment
         config={getWallConfig('front')}
         wallLength={width}
         wallHeight={height}
         wallThickness={thickness}
-        position={[0, 0, -wallOffset]}
+        position={[0, 0, -depth / 2]}
         rotation={[0, 0, 0]}
       />
       
-      {/* Front Wall (back in 3D view) */}
+      {/* Back Wall (at +z) */}
       <WallSegment
         config={getWallConfig('back')}
         wallLength={width}
         wallHeight={height}
         wallThickness={thickness}
-        position={[0, 0, wallOffset]}
+        position={[0, 0, depth / 2]}
         rotation={[0, Math.PI, 0]}
       />
       
-      {/* Left Wall */}
+      {/* Left Wall (at -x) */}
       <WallSegment
         config={getWallConfig('left')}
         wallLength={depth}
         wallHeight={height}
         wallThickness={thickness}
-        position={[-wallOffset, 0, 0]}
+        position={[-width / 2, 0, 0]}
         rotation={[0, Math.PI / 2, 0]}
       />
       
-      {/* Right Wall */}
+      {/* Right Wall (at +x) */}
       <WallSegment
         config={getWallConfig('right')}
         wallLength={depth}
         wallHeight={height}
         wallThickness={thickness}
-        position={[wallOffset, 0, 0]}
+        position={[width / 2, 0, 0]}
         rotation={[0, -Math.PI / 2, 0]}
       />
     </group>

@@ -134,20 +134,13 @@ export interface FurnitureItem {
 
 /**
  * CanvasJSON - Main JSON structure for canvas rendering
- * Has two parts: room (walls, floor) and objects (furniture)
+ * Uses the same structure as SceneConfig for consistency
+ * 'room' is an alias for 'walls' (RoomConfig), 'objects' is an alias for 'furniture'
  */
-export interface CanvasJSON {
-  room: RoomConfig;
-  objects: FurnitureItem[];
-  floor: FloorConfig;
-  camera: CameraConfig;
-  lighting: LightingConfig;
-  background: {
-    gradient: {
-      from: string;
-      to: string;
-    };
-  };
+export interface RoomDesign {
+  // Additional type annotations for clarity
+  room?: RoomConfig;    // Alias for walls
+  objects?: FurnitureItem[];  // Alias for furniture
 }
 
 export interface GridConfig {
@@ -180,10 +173,9 @@ export interface SceneConfig {
   camera: CameraConfig;
   lighting: LightingConfig;
   floor: FloorConfig;
-  walls: RoomConfig;
+  roomDesign: RoomDesign;
   grid: GridConfig;
   controls: ControlsConfig;
-  furniture?: FurnitureItem[];
   background: {
     gradient: {
       from: string;
@@ -308,7 +300,10 @@ export const defaultSceneConfig: SceneConfig = {
       metalness: 0.1,
     },
   },
-  walls: defaultRoomConfig,
+  roomDesign: {
+    room: defaultRoomConfig,
+    objects: [],
+  },
   grid: {
     enabled: true,
     size: 20,
@@ -341,11 +336,7 @@ export const defaultSceneConfig: SceneConfig = {
 };
 
 // Default CanvasJSON for room-focused rendering
-export const defaultCanvasJSON: CanvasJSON = {
+export const defaultCanvasJSON: RoomDesign = {
   room: defaultRoomConfig,
-  objects: defaultSceneConfig.furniture || [],
-  floor: defaultSceneConfig.floor,
-  camera: defaultSceneConfig.camera,
-  lighting: defaultSceneConfig.lighting,
-  background: defaultSceneConfig.background,
+  objects: [],
 };

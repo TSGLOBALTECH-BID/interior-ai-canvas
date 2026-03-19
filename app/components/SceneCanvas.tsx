@@ -10,14 +10,16 @@ import Table from '@/app/components/Table'
 import Lighting from '@/app/components/Lighting'
 import { PerspectiveCamera } from "three";
 import { 
-  CanvasJSON, 
-  defaultCanvasJSON, 
+  RoomDesign, 
+  defaultCanvasJSON,
+  defaultSceneConfig,
   FurnitureItem,
-  RoomConfig
+  RoomConfig,
+  CameraConfig
 } from "@/app/config/sceneConfig";
 
 interface SceneCanvasProps {
-  config?: Partial<CanvasJSON>;
+  config?: Partial<RoomDesign>;
   isEmpty?: boolean;
 }
 
@@ -34,16 +36,23 @@ export default function SceneCanvas({ config, isEmpty = false }: SceneCanvasProp
   console.log('SceneCanvas received config:', JSON.stringify(config, null, 2));
   
   // Merge provided config with defaults
-  const canvasJSON: CanvasJSON = {
+  // RoomDesign only contains room-specific items (room config and furniture objects)
+  // Other properties (floor, camera, lighting, grid, controls, background) come from defaultSceneConfig
+  const roomDesign: RoomDesign = {
     room: config?.room ? { ...defaultCanvasJSON.room, ...config.room } : defaultCanvasJSON.room,
     objects: config?.objects || defaultCanvasJSON.objects,
-    floor: config?.floor ? { ...defaultCanvasJSON.floor, ...config.floor } : defaultCanvasJSON.floor,
-    camera: config?.camera ? { ...defaultCanvasJSON.camera, ...config.camera } : defaultCanvasJSON.camera,
-    lighting: config?.lighting ? { ...defaultCanvasJSON.lighting, ...config.lighting } : defaultCanvasJSON.lighting,
-    background: config?.background ? { ...defaultCanvasJSON.background, ...config.background } : defaultCanvasJSON.background,
   };
 
-  const { room, objects, floor, camera: cameraConfig, lighting, background } = canvasJSON;
+  // Use defaultSceneConfig for canvas-level properties
+  const { room, objects } = roomDesign;
+  const floor = defaultSceneConfig.floor;
+  const cameraConfig = defaultSceneConfig.camera;
+  const lighting = defaultSceneConfig.lighting;
+  const grid = defaultSceneConfig.grid;
+  const controls = defaultSceneConfig.controls;
+  const background = defaultSceneConfig.background;
+
+  // Destructuring removed - using individual assignments above
 
   return (
     <div className="w-full h-full relative">
@@ -92,36 +101,36 @@ export default function SceneCanvas({ config, isEmpty = false }: SceneCanvasProp
         <Walls config={room} />
         
         {/* Objects/Furniture - rendered from CanvasJSON objects */}
-        {objects.map((item: FurnitureItem) => (
+        {(objects || []).map((item: FurnitureItem) => (
           <FurnitureRenderer key={item.id} item={item} />
         ))}
         
         {/* Grid helper for design alignment */}
         <Grid
           position={[0, 0.01, 0]}
-          args={[20, 20]}
-          cellSize={0.5}
-          cellThickness={0.5}
-          cellColor="#6b7280"
-          sectionSize={2}
-          sectionThickness={1}
-          sectionColor="#9ca3af"
-          fadeDistance={30}
-          fadeStrength={1}
+          args={[grid.size, grid.divisions]}
+          cellSize={grid.cellSize}
+          cellThickness={grid.cellThickness}
+          cellColor={grid.cellColor}
+          sectionSize={grid.sectionSize}
+          sectionThickness={grid.sectionThickness}
+          sectionColor={grid.sectionColor}
+          fadeDistance={grid.fadeDistance}
+          fadeStrength={grid.fadeStrength}
           followCamera={false}
           infiniteGrid={true}
         />
         
         {/* Camera Controls */}
         <OrbitControls
-          enablePan={true}
-          enableZoom={true}
-          enableRotate={true}
-          minDistance={3}
-          maxDistance={20}
-          minPolarAngle={0}
-          maxPolarAngle={Math.PI / 2.1}
-          target={[0, 0, 0]}
+          enablePan={controls.enablePan}
+          enableZoom={controls.enableZoom}
+          enableRotate={controls.enableRotate}
+          minDistance={controls.minDistance}
+          maxDistance={controls.maxDistance}
+          minPolarAngle={controls.minPolarAngle}
+          maxPolarAngle={controls.maxPolarAngle}
+          target={[controls.target.x, controls.target.y, controls.target.z]}
         />
       </Suspense>
     </Canvas>
@@ -132,7 +141,7 @@ export default function SceneCanvas({ config, isEmpty = false }: SceneCanvasProp
 /**
  * CameraController - Handles camera positioning based on config
  */
-function CameraController({ config }: { config: CanvasJSON['camera'] }) {
+function CameraController({ config }: { config: CameraConfig }) {
   const { camera } = useThree();
   
   useEffect(() => {
