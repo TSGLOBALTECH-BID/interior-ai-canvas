@@ -125,7 +125,7 @@ export interface RoomConfig {
  */
 export interface FurnitureItem {
   id: string;
-  type: 'sofa' | 'table' | 'custom';
+  type: 'sofa' | 'table' | 'tvpanel' | 'custom';
   position: Vector3;
   rotation?: Vector3;
   scale?: Vector3;
@@ -183,6 +183,21 @@ export interface SceneConfig {
     };
   };
 }
+
+// Default furniture objects for the scene
+export const defaultFurnitureObjects: FurnitureItem[] = [
+  {
+    id: 'tvpanel-1',
+    type: 'tvpanel',
+    position: { x: 0, y: 0, z: 4.6 },
+    properties: {
+      frameColor: '#1a1a1a',
+      screenColor: '#0a0a0a',
+      standColor: '#5c4033',
+      tvSize: 'medium',
+    },
+  },
+];
 
 // Default Room Configuration with walls, windows, and doors
 export const defaultRoomConfig: RoomConfig = {
@@ -302,7 +317,7 @@ export const defaultSceneConfig: SceneConfig = {
   },
   roomDesign: {
     room: defaultRoomConfig,
-    objects: [],
+    objects: defaultFurnitureObjects,
   },
   grid: {
     enabled: true,
@@ -338,5 +353,17 @@ export const defaultSceneConfig: SceneConfig = {
 // Default CanvasJSON for room-focused rendering
 export const defaultCanvasJSON: RoomDesign = {
   room: defaultRoomConfig,
-  objects: [],
+  objects: [
+    {
+      id: 'tvpanel-1',
+      type: 'tvpanel',
+      position: { x: 0, y: 0, z: 4.6 },
+      properties: {
+        frameColor: '#1a1a1a',
+        screenColor: '#0a0a0a',
+        standColor: '#5c4033',
+        tvSize: 'medium',
+      },
+    },
+  ],
 };

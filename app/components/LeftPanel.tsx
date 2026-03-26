@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { RoomConfig } from "@/app/config/sceneConfig";
+import { RoomConfig, FurnitureItem } from "@/app/config/sceneConfig";
 import DesignTab from "./DesignTab";
 import RoomSettingsTab from "./RoomSettingsTab";
+import ObjectSettingsTab from "./ObjectSettingsTab";
 
 interface LeftPanelProps {
   prompt: string;
@@ -13,6 +14,8 @@ interface LeftPanelProps {
   onSubmit: (prompt: string) => void;
   roomConfig: RoomConfig;
   onRoomConfigChange: (config: RoomConfig) => void;
+  objects: FurnitureItem[];
+  onObjectsChange: (objects: FurnitureItem[]) => void;
 }
 
 export default function LeftPanel({
@@ -23,8 +26,10 @@ export default function LeftPanel({
   onSubmit,
   roomConfig,
   onRoomConfigChange,
+  objects,
+  onObjectsChange,
 }: LeftPanelProps) {
-  const [activeTab, setActiveTab] = useState<'design' | 'room'>('design');
+  const [activeTab, setActiveTab] = useState<'design' | 'room' | 'objects'>('design');
 
   return (
     <div className="w-full md:w-[400px] flex-shrink-0 flex flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-y-auto max-h-screen">
@@ -59,6 +64,16 @@ export default function LeftPanel({
         >
           Room Settings
         </button>
+        <button
+          onClick={() => setActiveTab('objects')}
+          className={`flex-1 py-3 text-sm font-medium transition-colors ${
+            activeTab === 'objects'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-zinc-500 hover:text-zinc-700'
+          }`}
+        >
+          Objects
+        </button>
       </div>
 
       {activeTab === 'design' ? (
@@ -69,10 +84,17 @@ export default function LeftPanel({
           lastUpdate={lastUpdate}
           onSubmit={onSubmit}
         />
-      ) : (
+      ) : activeTab === 'room' ? (
         <RoomSettingsTab
           roomConfig={roomConfig}
           onRoomConfigChange={onRoomConfigChange}
+        />
+      ) : (
+        <ObjectSettingsTab
+          objects={objects}
+          onObjectsChange={onObjectsChange}
+          roomWidth={roomConfig.width}
+          roomDepth={roomConfig.depth}
         />
       )}
     </div>

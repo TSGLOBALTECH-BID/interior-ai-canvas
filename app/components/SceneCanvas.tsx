@@ -7,6 +7,7 @@ import Floor from "@/app/components/Floor"
 import Walls from '@/app/components/Walls'
 import Sofa from '@/app/components/Sofa'
 import Table from '@/app/components/Table'
+import TVPanel from '@/app/components/TVPanel'
 import Lighting from '@/app/components/Lighting'
 import { PerspectiveCamera } from "three";
 import { 
@@ -178,11 +179,20 @@ function FurnitureRenderer({ item }: { item: FurnitureItem }) {
     item.position.z
   ];
 
+  // Get rotation as [x, y, z] tuple or default to [0, 0, 0]
+  const rotation: [number, number, number] = [
+    item.rotation?.x || 0,
+    item.rotation?.y || 0,
+    item.rotation?.z || 0,
+  ];
+
   switch (item.type) {
     case 'sofa':
       return <Sofa position={position} properties={item.properties} />;
     case 'table':
       return <Table position={position} properties={item.properties} />;
+    case 'tvpanel':
+      return <TVPanel position={position} rotation={rotation} properties={item.properties} />;
     default:
       return null;
   }

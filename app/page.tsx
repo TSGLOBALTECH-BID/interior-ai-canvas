@@ -227,6 +227,16 @@ export default function Home() {
         onSubmit={handleSceneUpdate}
         roomConfig={roomConfig}
         onRoomConfigChange={handleRoomConfigChange}
+        objects={sceneConfig.roomDesign.objects || []}
+        onObjectsChange={(newObjects) => {
+          setSceneConfig(prevConfig => ({
+            ...prevConfig,
+            roomDesign: {
+              ...prevConfig.roomDesign,
+              objects: newObjects,
+            },
+          }));
+        }}
       />
 
       {/* Right Panel - Canvas Area */}
