@@ -4,6 +4,7 @@ import { FurnitureItem } from "@/app/config/sceneConfig";
 
 type WallSide = 'front' | 'back' | 'left' | 'right';
 type TVSize = 'small' | 'medium' | 'large';
+type TVVariant = 'console' | 'wall-mount' | 'retro' | 'modern' | 'gaming';
 
 interface ObjectSettingsTabProps {
   objects: FurnitureItem[];
@@ -23,6 +24,14 @@ const TV_SIZE_OPTIONS: { value: TVSize; label: string; width: number; height: nu
   { value: 'small', label: 'Small (32")', width: 1.2, height: 0.8 },
   { value: 'medium', label: 'Medium (50")', width: 1.8, height: 1.1 },
   { value: 'large', label: 'Large (65")', width: 2.4, height: 1.4 },
+];
+
+const TV_VARIANT_OPTIONS: { value: TVVariant; label: string; description: string }[] = [
+  { value: 'console', label: 'Console', description: 'Traditional TV with wooden console stand' },
+  { value: 'wall-mount', label: 'Wall Mount', description: 'Sleek wall-mounted TV' },
+  { value: 'retro', label: 'Retro', description: 'Classic vintage TV style with antennas' },
+  { value: 'modern', label: 'Modern', description: 'Minimalist design with metal stand' },
+  { value: 'gaming', label: 'Gaming', description: 'Curved screen with RGB lighting' },
 ];
 
 const FRAME_COLORS = [
@@ -93,6 +102,7 @@ export default function ObjectSettingsTab({
           screenColor: '#0a0a0a',
           standColor: '#5c4033',
           tvSize: 'medium',
+          variant: 'console',
         },
       };
       onObjectsChange([...objects.filter(obj => obj.type !== 'tvpanel'), newTVPanel]);
@@ -174,6 +184,19 @@ export default function ObjectSettingsTab({
     onObjectsChange(updatedObjects);
   };
 
+  const handleVariantChange = (variant: TVVariant) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'tvpanel') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, variant },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
   const currentWallSide = getCurrentWallSide();
   const currentPosition = currentWallSide === 'left' || currentWallSide === 'right' 
     ? tvPanel?.position.z || 0 
@@ -181,6 +204,7 @@ export default function ObjectSettingsTab({
   const currentSize = (tvPanel?.properties?.tvSize as TVSize) || 'medium';
   const currentFrameColor = (tvPanel?.properties?.frameColor as string) || '#1a1a1a';
   const currentStandColor = (tvPanel?.properties?.standColor as string) || '#5c4033';
+  const currentVariant = (tvPanel?.properties?.variant as TVVariant) || 'console';
 
   return (
     <div className="p-4 md:p-6 space-y-6">
@@ -261,6 +285,29 @@ export default function ObjectSettingsTab({
                   }`}
                 >
                   {size.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* TV Variant */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              TV Style
+            </label>
+            <div className="grid grid-cols-1 gap-2">
+              {TV_VARIANT_OPTIONS.map((variant) => (
+                <button
+                  key={variant.value}
+                  onClick={() => handleVariantChange(variant.value)}
+                  className={`p-3 rounded-lg border text-left transition-colors ${
+                    currentVariant === variant.value
+                      ? 'border-blue-600 bg-blue-50 dark:bg-blue-900 text-blue-600'
+                      : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-zinc-300'
+                  }`}
+                >
+                  <div className="font-medium text-sm">{variant.label}</div>
+                  <div className="text-xs opacity-75 mt-1">{variant.description}</div>
                 </button>
               ))}
             </div>

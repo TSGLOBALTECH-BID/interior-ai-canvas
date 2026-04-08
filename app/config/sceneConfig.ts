@@ -195,6 +195,7 @@ export const defaultFurnitureObjects: FurnitureItem[] = [
       screenColor: '#0a0a0a',
       standColor: '#5c4033',
       tvSize: 'medium',
+      variant: 'console',
     },
   },
 ];
@@ -232,9 +233,9 @@ export const defaultRoomConfig: RoomConfig = {
       },
     },
     {
-      id: 'back-wall',
+      id: 'back-wall', 
       side: 'back',
-      hasWindow: true,
+      hasWindow: false,
       windowConfig: {
         id: 'back-window',
         position: { x: 0.5, y: 0, z: 0 },
@@ -271,8 +272,8 @@ export const defaultRoomConfig: RoomConfig = {
 // Default Scene Configuration
 export const defaultSceneConfig: SceneConfig = {
   camera: {
-    position: { x: 8, y: 6, z: 8 },
-    fov: 50,
+    position: { x: 5, y: 15, z: -15 },
+    fov: 35,
     near: 0.1,
     far: 1000,
   },
@@ -363,6 +364,7 @@ export const defaultCanvasJSON: RoomDesign = {
         screenColor: '#0a0a0a',
         standColor: '#5c4033',
         tvSize: 'medium',
+        variant: 'console',
       },
     },
   ],
