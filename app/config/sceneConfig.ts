@@ -125,7 +125,7 @@ export interface RoomConfig {
  */
 export interface FurnitureItem {
   id: string;
-  type: 'sofa' | 'table' | 'tvpanel' | 'custom';
+  type: 'sofa' | 'table' | 'tvpanel' | 'lshapesofa' | 'custom';
   position: Vector3;
   rotation?: Vector3;
   scale?: Vector3;
@@ -196,6 +196,30 @@ export const defaultFurnitureObjects: FurnitureItem[] = [
       standColor: '#5c4033',
       tvSize: 'medium',
       variant: 'console',
+    },
+  },
+  {
+    id: 'sofa-1',
+    type: 'sofa',
+    position: { x: 0, y: 0, z: -2 },
+    rotation: { x: 0, y: 0, z: 0 },
+    properties: {
+      color: '#d4c4b0',
+      cushionColor: '#e8dcc8',
+      legColor: '#5c4033',
+      variant: 'traditional',
+    },
+  },
+  {
+    id: 'lshapesofa-1',
+    type: 'lshapesofa',
+    position: { x: -3, y: 0, z: 3 },
+    rotation: { x: 0, y: Math.PI / 2, z: 0 }, // Rotated to fit in back-left corner
+    properties: {
+      color: '#8b7355',
+      cushionColor: '#e8dcc8',
+      legColor: '#5c4033',
+      size: 'medium',
     },
   },
 ];
@@ -365,6 +389,30 @@ export const defaultCanvasJSON: RoomDesign = {
         standColor: '#5c4033',
         tvSize: 'medium',
         variant: 'console',
+      },
+    },
+    {
+      id: 'sofa-1',
+      type: 'sofa',
+      position: { x: 0, y: 0, z: -2 },
+      rotation: { x: 0, y: 0, z: 0 },
+      properties: {
+        color: '#d4c4b0',
+        cushionColor: '#e8dcc8',
+        legColor: '#5c4033',
+        variant: 'traditional',
+      },
+    },
+    {
+      id: 'lshapesofa-1',
+      type: 'lshapesofa',
+      position: { x: -3, y: 0, z: 3 },
+      rotation: { x: 0, y: Math.PI / 2, z: 0 }, // Rotated to fit in back-left corner
+      properties: {
+        color: '#8b7355',
+        cushionColor: '#e8dcc8',
+        legColor: '#5c4033',
+        size: 'medium',
       },
     },
   ],

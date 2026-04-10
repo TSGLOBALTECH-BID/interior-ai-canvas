@@ -8,6 +8,7 @@ import Walls from '@/app/components/Walls'
 import Sofa from '@/app/components/Sofa'
 import Table from '@/app/components/Table'
 import TVPanel from '@/app/components/TVPanel'
+import LShapeSofa from '@/app/components/LShapeSofa'
 import Lighting from '@/app/components/Lighting'
 import { PerspectiveCamera } from "three";
 import { 
@@ -193,6 +194,8 @@ function FurnitureRenderer({ item }: { item: FurnitureItem }) {
       return <Table position={position} properties={item.properties} />;
     case 'tvpanel':
       return <TVPanel position={position} rotation={rotation} properties={item.properties} />;
+    case 'lshapesofa':
+      return <LShapeSofa position={position} rotation={rotation} properties={item.properties} />;
     default:
       return null;
   }

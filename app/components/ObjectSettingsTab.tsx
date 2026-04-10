@@ -5,6 +5,7 @@ import { FurnitureItem } from "@/app/config/sceneConfig";
 type WallSide = 'front' | 'back' | 'left' | 'right';
 type TVSize = 'small' | 'medium' | 'large';
 type TVVariant = 'console' | 'wall-mount' | 'retro' | 'modern' | 'gaming';
+type SofaVariant = 'traditional' | 'modern' | 'chaise' | 'loveseat';
 
 interface ObjectSettingsTabProps {
   objects: FurnitureItem[];
@@ -34,6 +35,13 @@ const TV_VARIANT_OPTIONS: { value: TVVariant; label: string; description: string
   { value: 'gaming', label: 'Gaming', description: 'Curved screen with RGB lighting' },
 ];
 
+const SOFA_VARIANT_OPTIONS: { value: SofaVariant; label: string; description: string }[] = [
+  { value: 'traditional', label: 'Traditional', description: 'Classic sofa with armrests and back cushions' },
+  { value: 'modern', label: 'Modern', description: 'Sleek minimalist design with thin profile' },
+  { value: 'chaise', label: 'Chaise', description: 'Comfortable chaise lounge for relaxation' },
+  { value: 'loveseat', label: 'Loveseat', description: 'Compact two-person sofa' },
+];
+
 const FRAME_COLORS = [
   { value: '#1a1a1a', label: 'Black' },
   { value: '#2d2d2d', label: 'Dark Gray' },
@@ -52,6 +60,42 @@ const STAND_COLORS = [
   { value: '#c0c0c0', label: 'Silver' },
 ];
 
+const SOFA_COLORS = [
+  { value: '#d4c4b0', label: 'Beige' },
+  { value: '#8b7355', label: 'Brown' },
+  { value: '#4a4a4a', label: 'Gray' },
+  { value: '#1a1a1a', label: 'Black' },
+  { value: '#f5f5f5', label: 'White' },
+  { value: '#7c3aed', label: 'Purple' },
+  { value: '#dc2626', label: 'Red' },
+  { value: '#059669', label: 'Green' },
+];
+
+const SOFA_CUSHION_COLORS = [
+  { value: '#e8dcc8', label: 'Cream' },
+  { value: '#f5f5f5', label: 'White' },
+  { value: '#d1d5db', label: 'Light Gray' },
+  { value: '#6b7280', label: 'Gray' },
+  { value: '#1a1a1a', label: 'Black' },
+  { value: '#7c3aed', label: 'Purple' },
+  { value: '#dc2626', label: 'Red' },
+  { value: '#059669', label: 'Green' },
+];
+
+const SOFA_LEG_COLORS = [
+  { value: '#5c4033', label: 'Wood' },
+  { value: '#3d3d3d', label: 'Dark Gray' },
+  { value: '#1a1a1a', label: 'Black' },
+  { value: '#f5f5f5', label: 'White' },
+  { value: '#c0c0c0', label: 'Metal' },
+];
+
+const LSHAPE_SOFA_SIZE_OPTIONS: { value: 'small' | 'medium' | 'large'; label: string; description: string }[] = [
+  { value: 'small', label: 'Small (3x2)', description: 'Compact L-shaped sofa for smaller spaces' },
+  { value: 'medium', label: 'Medium (3x3)', description: 'Standard L-shaped sofa with balanced dimensions' },
+  { value: 'large', label: 'Large (4x4)', description: 'Spacious L-shaped sofa for larger areas' },
+];
+
 export default function ObjectSettingsTab({
   objects,
   onObjectsChange,
@@ -60,6 +104,12 @@ export default function ObjectSettingsTab({
 }: ObjectSettingsTabProps) {
   // Find TV panel in objects
   const tvPanel = objects.find(obj => obj.type === 'tvpanel');
+
+  // Find sofa in objects
+  const sofa = objects.find(obj => obj.type === 'sofa');
+
+  // Find L-shaped sofa in objects
+  const lShapeSofa = objects.find(obj => obj.type === 'lshapesofa');
   
   // Calculate wall position based on wall side
   const getWallPosition = (wallSide: WallSide): { x: number; z: number; rotation: number } => {
@@ -197,14 +247,188 @@ export default function ObjectSettingsTab({
     onObjectsChange(updatedObjects);
   };
 
+  const handleSofaToggle = (enabled: boolean) => {
+    if (enabled) {
+      // Add sofa if not present
+      const newSofa: FurnitureItem = {
+        id: 'sofa-1',
+        type: 'sofa',
+        position: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        properties: {
+          color: '#d4c4b0',
+          cushionColor: '#e8dcc8',
+          legColor: '#5c4033',
+          variant: 'traditional',
+        },
+      };
+      onObjectsChange([...objects.filter(obj => obj.type !== 'sofa'), newSofa]);
+    } else {
+      // Remove sofa
+      onObjectsChange(objects.filter(obj => obj.type !== 'sofa'));
+    }
+  };
+
+  const handleSofaVariantChange = (variant: SofaVariant) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'sofa') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, variant },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
+  const handleSofaColorChange = (color: string) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'sofa') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, color },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
+  const handleSofaCushionColorChange = (color: string) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'sofa') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, cushionColor: color },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
+  const handleSofaLegColorChange = (color: string) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'sofa') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, legColor: color },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
+
+
+  const handleLShapeSofaToggle = (enabled: boolean) => {
+    if (enabled) {
+      // Add L-shaped sofa if not present - positioned at back-left corner
+      const newLShapeSofa: FurnitureItem = {
+        id: 'lshapesofa-1',
+        type: 'lshapesofa',
+        position: { x: -3, y: 0, z: 3 },
+        rotation: { x: 0, y: Math.PI / 2, z: 0 },
+        properties: {
+          color: '#8b7355',
+          cushionColor: '#e8dcc8',
+          legColor: '#5c4033',
+        },
+      };
+      onObjectsChange([...objects.filter(obj => obj.type !== 'lshapesofa'), newLShapeSofa]);
+    } else {
+      // Remove L-shaped sofa
+      onObjectsChange(objects.filter(obj => obj.type !== 'lshapesofa'));
+    }
+  };
+
+  const handleLShapeSofaColorChange = (color: string) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'lshapesofa') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, color },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
+  const handleLShapeSofaCushionColorChange = (color: string) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'lshapesofa') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, cushionColor: color },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
+  const handleLShapeSofaLegColorChange = (color: string) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'lshapesofa') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, legColor: color },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
+  const handleLShapeSofaSizeChange = (size: 'small' | 'medium' | 'large') => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'lshapesofa') {
+        return {
+          ...obj,
+          properties: { ...obj.properties, size },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
+  const handleLShapeSofaRotationChange = (rotation: number) => {
+    const updatedObjects = objects.map(obj => {
+      if (obj.type === 'lshapesofa') {
+        return {
+          ...obj,
+          rotation: { x: 0, y: rotation, z: 0 },
+        };
+      }
+      return obj;
+    });
+    onObjectsChange(updatedObjects);
+  };
+
   const currentWallSide = getCurrentWallSide();
-  const currentPosition = currentWallSide === 'left' || currentWallSide === 'right' 
-    ? tvPanel?.position.z || 0 
+  const currentPosition = currentWallSide === 'left' || currentWallSide === 'right'
+    ? tvPanel?.position.z || 0
     : tvPanel?.position.x || 0;
   const currentSize = (tvPanel?.properties?.tvSize as TVSize) || 'medium';
   const currentFrameColor = (tvPanel?.properties?.frameColor as string) || '#1a1a1a';
   const currentStandColor = (tvPanel?.properties?.standColor as string) || '#5c4033';
   const currentVariant = (tvPanel?.properties?.variant as TVVariant) || 'console';
+
+  const currentSofaVariant = (sofa?.properties?.variant as SofaVariant) || 'traditional';
+  const currentSofaColor = (sofa?.properties?.color as string) || '#d4c4b0';
+  const currentSofaCushionColor = (sofa?.properties?.cushionColor as string) || '#e8dcc8';
+  const currentSofaLegColor = (sofa?.properties?.legColor as string) || '#5c4033';
+
+  const currentLShapeSofaColor = (lShapeSofa?.properties?.color as string) || '#8b7355';
+  const currentLShapeSofaCushionColor = (lShapeSofa?.properties?.cushionColor as string) || '#e8dcc8';
+  const currentLShapeSofaLegColor = (lShapeSofa?.properties?.legColor as string) || '#5c4033';
+  const currentLShapeSofaSize = (lShapeSofa?.properties?.size as 'small' | 'medium' | 'large') || 'medium';
+  const currentLShapeSofaRotation = (lShapeSofa?.rotation?.y as number) || Math.PI / 2;
+  const currentSofaRotation = (sofa?.rotation?.y as number) || 0;
 
   return (
     <div className="p-4 md:p-6 space-y-6">
@@ -359,10 +583,257 @@ export default function ObjectSettingsTab({
         </>
       )}
 
+      {/* Sofa Enable/Disable */}
+      <div className="flex items-center justify-between">
+        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Sofa
+        </label>
+        <button
+          onClick={() => handleSofaToggle(!sofa)}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+            sofa ? 'bg-blue-600' : 'bg-zinc-300 dark:bg-zinc-600'
+          }`}
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              sofa ? 'translate-x-6' : 'translate-x-1'
+            }`}
+          />
+        </button>
+      </div>
+
+      {sofa && (
+        <>
+          {/* Sofa Variant */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              Sofa Style
+            </label>
+            <div className="grid grid-cols-1 gap-2">
+              {SOFA_VARIANT_OPTIONS.map((variant) => (
+                <button
+                  key={variant.value}
+                  onClick={() => handleSofaVariantChange(variant.value)}
+                  className={`p-3 rounded-lg border text-left transition-colors ${
+                    currentSofaVariant === variant.value
+                      ? 'border-blue-600 bg-blue-50 dark:bg-blue-900 text-blue-600'
+                      : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-zinc-300'
+                  }`}
+                >
+                  <div className="font-medium text-sm">{variant.label}</div>
+                  <div className="text-xs opacity-75 mt-1">{variant.description}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+
+
+          {/* Sofa Frame Color */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              Sofa Color
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {SOFA_COLORS.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => handleSofaColorChange(color.value)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    currentSofaColor === color.value
+                      ? 'border-blue-600 scale-110'
+                      : 'border-zinc-200 dark:border-zinc-700'
+                  }`}
+                  style={{ backgroundColor: color.value }}
+                  title={color.label}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Sofa Cushion Color */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              Cushion Color
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {SOFA_CUSHION_COLORS.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => handleSofaCushionColorChange(color.value)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    currentSofaCushionColor === color.value
+                      ? 'border-blue-600 scale-110'
+                      : 'border-zinc-200 dark:border-zinc-700'
+                  }`}
+                  style={{ backgroundColor: color.value }}
+                  title={color.label}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Sofa Leg Color */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              Leg Color
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {SOFA_LEG_COLORS.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => handleSofaLegColorChange(color.value)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    currentSofaLegColor === color.value
+                      ? 'border-blue-600 scale-110'
+                      : 'border-zinc-200 dark:border-zinc-700'
+                  }`}
+                  style={{ backgroundColor: color.value }}
+                  title={color.label}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* L-Shaped Sofa Enable/Disable */}
+      <div className="flex items-center justify-between">
+        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          L-Shaped Sofa
+        </label>
+        <button
+          onClick={() => handleLShapeSofaToggle(!lShapeSofa)}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+            lShapeSofa ? 'bg-blue-600' : 'bg-zinc-300 dark:bg-zinc-600'
+          }`}
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              lShapeSofa ? 'translate-x-6' : 'translate-x-1'
+            }`}
+          />
+        </button>
+      </div>
+
+      {lShapeSofa && (
+        <>
+          {/* L-Shaped Sofa Size */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              Size
+            </label>
+            <div className="grid grid-cols-1 gap-2">
+              {LSHAPE_SOFA_SIZE_OPTIONS.map((size) => (
+                <button
+                  key={size.value}
+                  onClick={() => handleLShapeSofaSizeChange(size.value)}
+                  className={`p-3 rounded-lg border text-left transition-colors ${
+                    currentLShapeSofaSize === size.value
+                      ? 'border-blue-600 bg-blue-50 dark:bg-blue-900 text-blue-600'
+                      : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-zinc-300'
+                  }`}
+                >
+                  <div className="font-medium text-sm">{size.label}</div>
+                  <div className="text-xs opacity-75 mt-1">{size.description}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* L-Shaped Sofa Rotation */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              Rotation
+            </label>
+            <input
+              type="range"
+              min={0}
+              max={Math.PI * 2}
+              step={Math.PI / 4}
+              value={currentLShapeSofaRotation}
+              onChange={(e) => handleLShapeSofaRotationChange(Number(e.target.value))}
+              className="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+            />
+            <div className="flex justify-between text-xs text-zinc-500 mt-1">
+              <span>0°</span>
+              <span>{(currentLShapeSofaRotation * 180 / Math.PI).toFixed(0)}°</span>
+              <span>360°</span>
+            </div>
+          </div>
+
+          {/* L-Shaped Sofa Frame Color */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              L-Shaped Sofa Color
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {SOFA_COLORS.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => handleLShapeSofaColorChange(color.value)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    currentLShapeSofaColor === color.value
+                      ? 'border-blue-600 scale-110'
+                      : 'border-zinc-200 dark:border-zinc-700'
+                  }`}
+                  style={{ backgroundColor: color.value }}
+                  title={color.label}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* L-Shaped Sofa Cushion Color */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              Cushion Color
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {SOFA_CUSHION_COLORS.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => handleLShapeSofaCushionColorChange(color.value)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    currentLShapeSofaCushionColor === color.value
+                      ? 'border-blue-600 scale-110'
+                      : 'border-zinc-200 dark:border-zinc-700'
+                  }`}
+                  style={{ backgroundColor: color.value }}
+                  title={color.label}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* L-Shaped Sofa Leg Color */}
+          <div>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2 block">
+              Leg Color
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {SOFA_LEG_COLORS.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => handleLShapeSofaLegColorChange(color.value)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    currentLShapeSofaLegColor === color.value
+                      ? 'border-blue-600 scale-110'
+                      : 'border-zinc-200 dark:border-zinc-700'
+                  }`}
+                  style={{ backgroundColor: color.value }}
+                  title={color.label}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Placeholder for future objects */}
-      {!tvPanel && (
+      {!tvPanel && !sofa && !lShapeSofa && (
         <div className="text-center py-8 text-zinc-500 dark:text-zinc-400">
-          <p className="text-sm">Enable TV Panel to configure its settings</p>
+          <p className="text-sm">Enable TV Panel, Sofa, or L-Shaped Sofa to configure their settings</p>
         </div>
       )}
     </div>
